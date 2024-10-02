@@ -51,6 +51,7 @@ const App = () => {
   useEffect(() => {
     fetchProposals();
   }, [fetchProposals]);
+
   return (
     <Layout>
       <CreateProposal />
