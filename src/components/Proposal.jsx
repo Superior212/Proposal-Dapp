@@ -19,19 +19,24 @@ import {
 } from "lucide-react";
 
 const Proposal = ({
-  description,
-  amount,
-  minRequiredVote,
-  voteCount,
-  deadline,
-  executed,
+  description = "",
+  amount = "0",
+  minRequiredVote = "0",
+  voteCount = "0",
+  deadline = "0",
+  executed = false,
   onVote,
 }) => {
   const [isVoting, setIsVoting] = useState(false);
 
-  const isExpired = new Date(Number(deadline) * 1000) < new Date();
+  // Safely convert values to numbers with fallbacks
+  const safeVoteCount = Number(voteCount) || 0;
+  const safeMinRequiredVote = Number(minRequiredVote) || 1; // Prevent division by zero
+  const safeDeadline = Number(deadline) || 0;
+
+  const isExpired = new Date(safeDeadline * 1000) < new Date();
   const progressPercentage = Math.min(
-    (Number(voteCount) / Number(minRequiredVote)) * 100,
+    (safeVoteCount / safeMinRequiredVote) * 100,
     100
   );
 
@@ -67,7 +72,9 @@ const Proposal = ({
               <DollarSign className="mr-2 h-4 w-4" />
               Amount
             </div>
-            <div className="font-medium">{formatEther(amount)} ETH</div>
+            <div className="font-medium">
+              {formatEther(amount.toString())} ETH
+            </div>
           </div>
           <div className="space-y-1">
             <div className="flex items-center text-sm text-muted-foreground">
@@ -75,7 +82,7 @@ const Proposal = ({
               Deadline
             </div>
             <div className="font-medium">
-              {new Date(Number(deadline) * 1000).toLocaleDateString()}
+              {new Date(safeDeadline * 1000).toLocaleDateString()}
             </div>
           </div>
         </div>
@@ -84,7 +91,7 @@ const Proposal = ({
           <div className="flex justify-between text-sm">
             <div className="flex items-center">
               <Users className="mr-2 h-4 w-4" />
-              Votes: {Number(voteCount)} / {Number(minRequiredVote)}
+              Votes: {safeVoteCount} / {safeMinRequiredVote}
             </div>
             <span>{progressPercentage.toFixed(1)}%</span>
           </div>
