@@ -28,7 +28,6 @@ const Proposal = ({
   executed = false,
 }) => {
   const { vote, isVoting } = useVoteProposals();
-  //   const [isVoting, setIsVoting] = useState(false);
 
   // Safely convert values to numbers with fallbacks
   const safeVoteCount = Number(voteCount) || 0;
