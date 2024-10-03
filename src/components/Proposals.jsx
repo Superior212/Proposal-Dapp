@@ -1,15 +1,18 @@
 import Proposal from "./Proposal";
 
-function ProposalsCard({ proposals }) {
+function ProposalsCard({ proposals, isFetchingProposals }) {
   return (
     <>
-      {proposals.length === 0 ? (
+      {isFetchingProposals ? (
+        <>Fetching Proposals</>
+      ) : proposals.length === 0 ? (
         <p>No data to display</p>
       ) : (
         <div className="container mx-auto my-4">
           <div className="grid  grid-cols-1 sm:grid-cols-3 gap-3">
             {proposals.map(
               ({
+                id,
                 deadline,
                 minRequiredVote,
                 amount,
@@ -19,6 +22,7 @@ function ProposalsCard({ proposals }) {
               }) => (
                 <Proposal
                   key={`${deadline}${minRequiredVote}`}
+                  id={id}
                   amount={amount}
                   deadline={deadline}
                   description={description}

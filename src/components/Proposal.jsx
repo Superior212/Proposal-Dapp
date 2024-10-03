@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Card,
   CardHeader,
@@ -17,17 +16,19 @@ import {
   CheckCircle2,
   XCircle,
 } from "lucide-react";
+import useVoteProposals from "../hooks/useVoteProposal";
 
 const Proposal = ({
+  id,
   description = "",
   amount = "0",
   minRequiredVote = "0",
   voteCount = "0",
   deadline = "0",
   executed = false,
-  onVote,
 }) => {
-  const [isVoting, setIsVoting] = useState(false);
+  const { vote, isVoting } = useVoteProposals();
+  //   const [isVoting, setIsVoting] = useState(false);
 
   // Safely convert values to numbers with fallbacks
   const safeVoteCount = Number(voteCount) || 0;
@@ -40,16 +41,16 @@ const Proposal = ({
     100
   );
 
-  const handleVote = async () => {
-    try {
-      setIsVoting(true);
-      await onVote?.();
-    } catch (error) {
-      console.error("Voting failed:", error);
-    } finally {
-      setIsVoting(false);
-    }
-  };
+  //   const handleVote = async () => {
+  //     try {
+  //       setIsVoting(true);
+  //       await onVote?.();
+  //     } catch (error) {
+  //       console.error("Voting failed:", error);
+  //     } finally {
+  //       setIsVoting(false);
+  //     }
+  //   };
 
   return (
     <Card className="sm:w-full sm:max-w-xl">
@@ -119,7 +120,7 @@ const Proposal = ({
               : "Voting Open"}
           </div>
           <Button
-            onClick={handleVote}
+            onClick={() => vote(id)}
             disabled={executed || isExpired || isVoting}>
             {isVoting ? "Voting..." : "Vote"}
           </Button>
