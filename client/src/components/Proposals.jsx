@@ -1,6 +1,6 @@
 import Proposal from "./Proposal";
 
-function ProposalsCard({ proposals }) {
+function ProposalsCard ) {
   return (
     <>
       {proposals.length === 0 ? (
