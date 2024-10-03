@@ -20,6 +20,7 @@ import useCreateProposal from "../hooks/useCreateProposal";
 
 export function CreateProposal() {
   const handleCreateProposal = useCreateProposal();
+  const [isOpen, setIsOpen] = useState(false);
   const [state, setState] = useState({
     description: "",
     recipient: "",
@@ -29,17 +30,23 @@ export function CreateProposal() {
   });
 
   const handleInputChange = (name, e) => {
-    // Update state using the previous state
     setState((prevState) => ({
-      ...prevState, // Spread the previous state
-      [name]: e.target.value, // Update only the specified field
+      ...prevState,
+      [name]: e.target.value,
     }));
   };
+
   const { amount, duration, description, minVote, recipient } = state;
+
+  const handleSubmit = () => {
+    handleCreateProposal(description, recipient, amount, duration, minVote);
+    setIsOpen(false); // Close the dialog after submitting
+  };
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
+        <Button variant="outline">Create Proposal</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <Card className="w-full border-none shadow-none max-w-xl">
@@ -53,7 +60,7 @@ export function CreateProposal() {
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
               <Textarea
-                id="c"
+                id="description"
                 placeholder="Describe your proposal..."
                 rows={3}
                 value={description}
@@ -83,7 +90,7 @@ export function CreateProposal() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="duration">duration</Label>
+                <Label htmlFor="duration">Duration</Label>
                 <Input
                   id="duration"
                   type="number"
@@ -104,17 +111,7 @@ export function CreateProposal() {
             </div>
           </CardContent>
           <CardFooter className="flex justify-end">
-            <Button
-              onClick={() =>
-                handleCreateProposal(
-                  description,
-                  recipient,
-                  amount,
-                  duration,
-                  minVote
-                )
-              }
-              type="submit">
+            <Button onClick={handleSubmit} type="submit">
               Submit Proposal
             </Button>
           </CardFooter>

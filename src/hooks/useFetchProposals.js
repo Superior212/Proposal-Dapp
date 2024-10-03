@@ -1,9 +1,6 @@
 import multicallAbi from "../ABI/multicall2.json";
 import proposalAbi from "../ABI/proposal.json";
-import {
-    Contract,
-    Interface
-} from "ethers";
+import { Contract, Interface } from "ethers";
 import { useCallback, useEffect } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
@@ -14,7 +11,7 @@ const useFetchProposals = () => {
     const [proposals, setProposals] = useState([]);
     const [isFetchingProposals, setIsFetchingProposals] = useState(false);
 
-    const intfce = useMemo(() => new Interface(proposalAbi), []);
+    const itf = useMemo(() => new Interface(proposalAbi), []);
 
     const readOnlyProposalContract = useContract(true);
     const { readOnlyProvider } = useRunners();
@@ -28,26 +25,26 @@ const useFetchProposals = () => {
                 await readOnlyProposalContract.proposalCount()
             );
 
-            const ids = Array.from({ length: proposalCount - 1 }, (_, i) => i + 1);
+            const ids = Array.from({ length: proposalCount }, (_, i) => i + 1);
 
-            // ids.pop();
+            ids.pop();
 
             const calls = ids.map((id) => ({
                 target: import.meta.env.VITE_CONTRACT_ADDRESS,
                 callData: intfce.encodeFunctionData("proposals", [id]),
             }));
 
-            const multicall = new Contract(
+            const multiCall = new Contract(
                 import.meta.env.VITE_MULTI_CALL_ADDRESS,
                 multicallAbi,
                 readOnlyProvider
             );
 
-            // eslint-disable-next-line no-unused-vars
-            const [_, proposalsResult] = await multicall.aggregate.staticCall(calls);
+
+            const [_, proposalsResult] = await multiCall.aggregate.staticCall(calls);
 
             const decodedProposals = proposalsResult.map((result) =>
-                intfce.decodeFunctionResult("proposals", result)
+                itf.decodeFunctionResult("proposals", result)
             );
 
             setProposals(
@@ -58,7 +55,7 @@ const useFetchProposals = () => {
                     amount: proxy.amount,
                     description: proxy.description,
                     executed: proxy.executed,
-                    votecount: Number(proxy.voteCount),
+                    voteCount: Number(proxy.voteCount),
                 }))
             );
             setIsFetchingProposals(false);
@@ -74,11 +71,14 @@ const useFetchProposals = () => {
         setProposals((prevProposals) =>
             prevProposals.map((proposal, index) => {
                 if (proposal.id === proposalId) {
-                    console.log("updated voteCount of proposal with index:::", proposalId)
+                    console.log(
+                        "updated voteCount of proposal with index:::",
+                        proposalId
+                    );
                     return {
                         ...proposal,
-                        votecount: proposal.votecount + 1,
-                    }
+                        voteCount: proposal.voteCount + 1,
+                    };
                 }
                 return proposal;
             })
@@ -86,16 +86,16 @@ const useFetchProposals = () => {
     }, []);
 
     const handleVoted = (updatedValue) => {
-        console.log("updatedValue", updatedValue)
+        console.log("updatedValue", updatedValue);
         updateProposal(Number(updatedValue));
         console.log(proposals);
-    }
+    };
 
     const handleProposalCreated = (updatedValue) => {
         console.log("Proposal Creation Value:::", updatedValue);
 
         fetchProposals();
-    }
+    };
 
     useEffect(() => {
         fetchProposals();

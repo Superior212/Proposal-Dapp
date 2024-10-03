@@ -1,11 +1,9 @@
 import Proposal from "./Proposal";
 
-function ProposalsCard({ proposals, isFetchingProposals }) {
+function ProposalsCard({ proposals }) {
   return (
     <>
-      {isFetchingProposals ? (
-        <>Fetching Proposals</>
-      ) : proposals.length === 0 ? (
+      {proposals.length === 0 ? (
         <p>No data to display</p>
       ) : (
         <div className="container mx-auto my-4">
@@ -29,6 +27,7 @@ function ProposalsCard({ proposals, isFetchingProposals }) {
                   executed={executed}
                   minRequiredVote={minRequiredVote}
                   voteCount={voteCount}
+                  onClose={() => setIsModalOpen(false)}
                 />
               )
             )}
