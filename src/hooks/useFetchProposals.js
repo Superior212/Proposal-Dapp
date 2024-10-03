@@ -31,7 +31,7 @@ const useFetchProposals = () => {
 
             const calls = ids.map((id) => ({
                 target: import.meta.env.VITE_CONTRACT_ADDRESS,
-                callData: intfce.encodeFunctionData("proposals", [id]),
+                callData: itf.encodeFunctionData("proposals", [id]),
             }));
 
             const multiCall = new Contract(
@@ -63,7 +63,7 @@ const useFetchProposals = () => {
             console.log("An error occured: ", error);
             setIsFetchingProposals(false);
         }
-    }, [readOnlyProposalContract, readOnlyProvider, intfce]);
+    }, [readOnlyProposalContract, readOnlyProvider, itf]);
 
     const updateProposal = useCallback((proposalId) => {
         console.log("updating proposals");
@@ -110,7 +110,7 @@ const useFetchProposals = () => {
             readOnlyProposalContract.off("ProposalCreated", handleProposalCreated);
             readOnlyProposalContract.off("Voted", handleVoted);
         };
-    }, [intfce, readOnlyProposalContract]);
+    }, [itf, readOnlyProposalContract]);
 
     return { proposals, isFetchingProposals };
 };
